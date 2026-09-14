@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 
 from sqlalchemy import CheckConstraint, DateTime, Enum, ForeignKey, Index, String, func, text
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from fms.core.database import Base
@@ -34,6 +34,7 @@ class Flight(Base):
     original_departure_datetime: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     original_arrival_datetime: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     delay_reason: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    seat_map: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     created_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

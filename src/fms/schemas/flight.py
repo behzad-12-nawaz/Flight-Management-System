@@ -17,7 +17,13 @@ class SeatClassBase(BaseModel):
 
 
 class SeatClassCreate(SeatClassBase):
-    pass
+    base_price: Decimal = Field(
+        gt=0,
+        description=(
+            "Base (basic-fare) price for this cabin. The flexible fare is auto-generated at "
+            "base_price * 1.35. Prices are plain numeric(10,2) values - no currency code."
+        ),
+    )
 
 
 class SeatClassUpdate(BaseModel):
@@ -47,6 +53,12 @@ class FareResponse(FareBase):
     id: UUID
 
 
+class SeatClassSearchResponse(SeatClassResponse):
+    model_config = ConfigDict(from_attributes=True)
+
+    fares: List[FareResponse] = Field(default_factory=list)
+
+
 class FlightBase(BaseModel):
     flight_number: str = Field(min_length=1, max_length=50)
     origin: str = Field(min_length=1, max_length=100)
@@ -57,7 +69,10 @@ class FlightBase(BaseModel):
 
 
 class FlightCreate(FlightBase):
-    pass
+    total_seats: int = Field(
+        gt=0,
+        description="Must equal the sum of the seat_classes totals (enforced server-side).",
+    )
 
 
 class FlightScheduleUpdate(BaseModel):
@@ -95,6 +110,7 @@ class FlightResponse(BaseModel):
     original_departure_datetime: Optional[datetime]
     original_arrival_datetime: Optional[datetime]
     delay_reason: Optional[str]
+    seat_map: Optional[dict[str, str]] = None
     created_by: UUID
     created_at: datetime
     updated_at: datetime
@@ -110,4 +126,5 @@ class FlightSearchResult(BaseModel):
     departure_datetime: datetime
     arrival_datetime: datetime
     status: FlightStatus
-    seat_classes: List[SeatClassResponse]
+    total_seats: int
+    seat_classes: List[SeatClassSearchResponse]

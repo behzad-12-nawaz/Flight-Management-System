@@ -9,3 +9,8 @@ wheels/
 # Virtual environments
 .venv
 .env
+
+end_docker.md
+plan.md
+PROJECT_SUMMARY.md
+remaining.md

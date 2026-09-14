@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from fms.schemas.audit import AuditLogResponse
 from fms.schemas.booking import (
+    BookingCancelRequest,
     BookingConfirmRequest,
     BookingHoldRequest,
     BookingHoldResponse,
     BookingItemCancelRequest,
+    BookingItemCancellationResponse,
     BookingItemResponse,
     BookingResponse,
-    BookingCancelRequest,
     PassengerInfo,
     SeatHoldResponse,
 )
@@ -22,17 +23,29 @@ from fms.schemas.flight import (
     FlightSeatMapUpdate,
     SeatClassCreate,
     SeatClassResponse,
+    SeatClassSearchResponse,
     SeatClassUpdate,
 )
 from fms.schemas.refund import RefundApproveRequest, RefundResponse
-from fms.schemas.user import Token, TokenPayload, UserBase, UserCreate, UserResponse, UserUpdate
+from fms.schemas.user import (
+    Token,
+    TokenPayload,
+    TokenRefreshRequest,
+    UserBase,
+    UserCreate,
+    UserLogin,
+    UserResponse,
+    UserUpdate,
+)
 from fms.schemas.waitlist import WaitlistEntryResponse, WaitlistJoinRequest, WaitlistPromoteResponse
 
 __all__ = [
     "Token",
     "TokenPayload",
+    "TokenRefreshRequest",
     "UserBase",
     "UserCreate",
+    "UserLogin",
     "UserResponse",
     "UserUpdate",
     "FlightCreate",
@@ -52,6 +65,8 @@ __all__ = [
     "BookingResponse",
     "BookingCancelRequest",
     "BookingItemCancelRequest",
+    "BookingItemCancellationResponse",
+    "SeatClassSearchResponse",
     "PassengerInfo",
     "SeatHoldResponse",
     "WaitlistJoinRequest",

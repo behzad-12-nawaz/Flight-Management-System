@@ -22,6 +22,11 @@ class UserCreateAdmin(UserCreate):
     role: UserRole = UserRole.CUSTOMER
 
 
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=1, max_length=100)
+
+
 class UserUpdate(BaseModel):
     full_name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     loyalty_tier: Optional[str] = None
@@ -43,6 +48,10 @@ class Token(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
+
+
+class TokenRefreshRequest(BaseModel):
+    refresh_token: str = Field(min_length=1)
 
 
 class TokenPayload(BaseModel):

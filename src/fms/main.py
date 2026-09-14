@@ -9,7 +9,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fms.core import fms_exception_handler
 from fms.core.database import engine
 from fms.core.exceptions import FMSException
-from fms.routers import auth
+from fms.routers import (
+    admin_flights_router,
+    audit_router,
+    auth_router,
+    bookings_router,
+    cancellations_router,
+    refunds_router,
+    search_router,
+    waitlist_router,
+)
 
 
 @asynccontextmanager
@@ -34,7 +43,14 @@ app.add_middleware(
 
 app.add_exception_handler(FMSException, cast(Any, fms_exception_handler))
 
-app.include_router(auth.router)
+app.include_router(auth_router)
+app.include_router(admin_flights_router)
+app.include_router(search_router)
+app.include_router(bookings_router)
+app.include_router(cancellations_router)
+app.include_router(refunds_router)
+app.include_router(waitlist_router)
+app.include_router(audit_router)
 
 
 @app.get("/health")

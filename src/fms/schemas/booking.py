@@ -8,6 +8,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 from fms.core.enums import BookingItemStatus, BookingStatus, CabinClass, FareType, HoldStatus
+from fms.schemas.refund import RefundResponse
 
 
 class PassengerInfo(BaseModel):
@@ -82,3 +83,8 @@ class BookingCancelRequest(BaseModel):
 
 class BookingItemCancelRequest(BaseModel):
     reason: str = Field(default="customer", max_length=100)
+
+
+class BookingItemCancellationResponse(BaseModel):
+    item: BookingItemResponse
+    refund: Optional[RefundResponse] = None
