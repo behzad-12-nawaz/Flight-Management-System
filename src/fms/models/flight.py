@@ -9,7 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from fms.core.database import Base
 from fms.core.enums import CabinClass, FlightStatus
-
+from fms.models.fare import Fare
 
 class Flight(Base):
     __tablename__ = "flights"

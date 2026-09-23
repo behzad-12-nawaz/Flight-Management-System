@@ -34,8 +34,11 @@ class AuthService:
         result = await self.db.execute(select(User).where(User.email == email))
         user = result.scalar_one_or_none()
 
-        if not user or not verify_password(password, user.hashed_password):
-            raise ValidationError("Invalid email or password")
+        if not user:
+            raise ValidationError("User not found")
+
+        if not verify_password(password, user.hashed_password):
+            raise ValidationError("Invalid password")
 
         if not user.is_active:
             raise ValidationError("Account is deactivated")

@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = Field(default=60, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
     refresh_token_expire_days: int = Field(default=7, alias="REFRESH_TOKEN_EXPIRE_DAYS")
 
+    cookie_secure: bool = Field(default=False, alias="COOKIE_SECURE")
+    cookie_samesite: Literal["lax", "strict", "none"] = Field(default="lax", alias="COOKIE_SAMESITE")
+    cookie_domain: str | None = Field(default=None, alias="COOKIE_DOMAIN")
+
     seat_hold_minutes: int = Field(default=15, alias="SEAT_HOLD_MINUTES")
     price_hold_minutes: int = Field(default=15, alias="PRICE_HOLD_MINUTES")
     credit_expiry_days: int = Field(default=365, alias="CREDIT_EXPIRY_DAYS")

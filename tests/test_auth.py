@@ -1,6 +1,4 @@
 from __future__ import annotations
-
-import pytest
 from httpx import AsyncClient
 
 
@@ -78,3 +76,53 @@ class TestAuth:
     async def test_me_unauthorized(self, client: AsyncClient):
         response = await client.get("/auth/me")
         assert response.status_code == 401
+
+    async def test_login_sets_cookies(self, client: AsyncClient, test_user):
+        response = await client.post(
+            "/auth/login",
+            json={"email": test_user.email, "password": "testpassword123"},
+        )
+        assert response.status_code == 200
+        assert "access_token" in response.cookies
+        assert "refresh_token" in response.cookies
+
+    async def test_me_via_cookie(self, client: AsyncClient, test_user):
+        login_response = await client.post(
+            "/auth/login",
+            json={"email": test_user.email, "password": "testpassword123"},
+        )
+        access_token = login_response.cookies.get("access_token")
+        assert access_token is not None
+        client.cookies.set("access_token", access_token)
+
+        # Call /auth/me without headers; should authenticate via cookie
+        response = await client.get("/auth/me")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["email"] == test_user.email
+
+    async def test_refresh_via_cookie(self, client: AsyncClient, test_user):
+        login_response = await client.post(
+            "/auth/login",
+            json={"email": test_user.email, "password": "testpassword123"},
+        )
+        refresh_token = login_response.cookies.get("refresh_token")
+        assert refresh_token is not None
+        client.cookies.set("refresh_token", refresh_token)
+
+        # Call /auth/refresh with no JSON payload; should refresh via cookie
+        response = await client.post("/auth/refresh")
+        assert response.status_code == 200
+        data = response.json()
+        assert "access_token" in data
+        assert "access_token" in response.cookies
+
+    async def test_logout_clears_cookies(self, client: AsyncClient, test_user):
+        login_response = await client.post(
+            "/auth/login",
+            json={"email": test_user.email, "password": "testpassword123"},
+        )
+        assert "access_token" in login_response.cookies
+        logout_response = await client.post("/auth/logout")
+        assert logout_response.status_code == 200
+        assert logout_response.json()["message"] == "Logged out successfully"
